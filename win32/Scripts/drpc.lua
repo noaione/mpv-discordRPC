@@ -18,13 +18,29 @@ end
 
 local function discordrpc()
 	filename = mp.get_property("filename")
+	if filename == "" then
+		filename = "Idling"
+	end
+	-- get state
+	state = mp.get_property("core-idle")
+	state = tostring(state)
+	if state == "yes" then
+		stateimage = "pause"
+		detailstext = "Paused."
+		statetext = "Pause"
+	elseif state == "no" then
+		stateimage = "play"
+		statetext = "Playing"
+		detailstext = "Now Playing..."
+	end
+	-- init rpc and send
 	discordRPC.initialize(appId, true)
 	presence = {
 		state = filename,
-		details = "Now Playing...",
+		details = detailstext,
 		largeImageKey = "mpvlogo",
-		smallImageKey = "play",
-		smallImageText = "Playing",
+		smallImageKey = stateimage,
+		smallImageText = statetext,
 	}
 	discordRPC.updatePresence(presence)
 	discordRPC.runCallbacks()

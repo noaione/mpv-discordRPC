@@ -1,5 +1,5 @@
-# mpv media player Discord RPC Intergration
-##### This is work in progress thingymagic, since it can broke anytimes
+# mpv media player Discord RPC Integration
+#### This is work in progress thingymagic, since it can broke anytimes
 
 
 ### How to install

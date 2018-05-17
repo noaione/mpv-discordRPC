@@ -1,6 +1,7 @@
 # mpv media player Discord RPC Integration
 #### This is work in progress thingymagic, since it can broke anytimes
 
+### [Download](https://github.com/noaione/mpv-discordRPC/releases)
 
 ### How to install
 ```
@@ -27,4 +28,5 @@
 ```
 -- Version 1.0: First initial release
 -- Version 1.1: Pause/Play kinda thingy, added win32/win64 version, linux/mac soon, since i don't know how lua loaded in linux/mac
+-- Version 1.2: Cleaned up, making idle mode more idle. Compacted everything to 3 files
 ```

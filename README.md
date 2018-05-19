@@ -20,7 +20,7 @@
 ### Problem:
 ```
 -- 15 seconds interval is too long
--- Sometimes it won't gone after you exit
+-- Sometimes it won't gone after you exit (can be fixed by restarting discord: CTRL+R)
 -- Sometimes it takes about 10+ seconds until it show up
 ```
 

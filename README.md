@@ -11,7 +11,7 @@
 ### How to install (Linux)
 1. Extract files
 2. open up terminal and write this LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/YOURUSERNAME/.config/mpv/scripts/
-3. Copy extracted files folder to /home/YOURUSERNAME/.config/mpv/scripts
+3. Copy extracted files to /home/YOURUSERNAME/.config/mpv/scripts
 4. Open up terminal and type this: 
 ```bash
 echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.config/mpv/scripts/" >> ~/.bashrc

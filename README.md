@@ -1,7 +1,11 @@
 # mpv media player Discord RPC Integration
-#### This is work in progress thingymagic, since it can broke anytimes
+Using [lua-DiscordRPC](https://github.com/pfirsich/lua-discordRPC) as base and mpv lua module
+
+![Playing](https://image.ibb.co/dkjnt8/mpv_DRPC_Playing.png) ![Paused](https://image.ibb.co/mq496T/mpv_DRPC_Paused.png) ![Idling](https://image.ibb.co/eLdDY8/mpv_DRPC_Idling.png)
 
 ### [Download](https://github.com/noaione/mpv-discordRPC/releases)
+
+
 
 ### How to install (Windows)
 1. Download this repo or goto Release
@@ -19,14 +23,13 @@ echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.config/mpv/scripts/" >> ~/.
 
 ### Information:
 ```
--- Refresh interval: 15 seconds (?)
+-- Refresh interval: 15 seconds (Limited by Discord itself)
 -- Script: lua
--- Version: 1.3
+-- Current Version: 1.4
 ```
 
 ### Problem:
 ```
--- 15 seconds interval is too long
 -- Sometimes it won't gone after you exit (can be fixed by restarting discord: CTRL+R)
 -- Sometimes it takes about 10+ seconds until it show up
 ```
@@ -37,4 +40,5 @@ echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.config/mpv/scripts/" >> ~/.
 -- Version 1.1: Pause/Play kinda thingy, added win32/win64 version, linux/mac soon, since i don't know how lua loaded in linux/mac
 -- Version 1.2: Cleaned up, making idle mode more idle. Compacted everything to 3 files
 -- Version 1.3: Linux Support (please open issue if there is any problem)
+-- Version 1.4: Remaining time, more detailed info, and updated DiscordRPC.lua and .dll to version 3.3.0
 ```

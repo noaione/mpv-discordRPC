@@ -30,20 +30,39 @@ function SecondsToClock(seconds)
 end
 
 local function discordrpc()
+	--get filename
 	ff = mp.get_property("file-format")
 	ff = tostring(ff)
 	if ff == "mp3" or ff == "flac" or ff == "m4a" or ff == "wav" or ff == "dts" then
-		filename = mp.get_property("media-title")
-		filename = tostring(filename)
-		filename = filename.."."..ff
+		taiteru = mp.get_property("media-title")
+		taiteru = taiteru..'.'..ff
+		artist = mp.get_property_native("metadata/by-key/Artist")
+		if taiteru ~= nil then
+			filename = taiteru
+		end
+		if artist ~= nil then
+			filename = ("%s - %s"):format(artist, filename)
+		end
+		formatto = "song"
 	else
 		filename = mp.get_property("filename/no-ext")
 		filename = tostring(filename)
+		formatto = "video"
 	end
-	file = "file"
-	if filename == "nil" then
-		filename = "Idling"
-		file = "nofile"
+	
+	medianame = mp.get_property("media-title")
+	medianame = ("Current File: %s"):format(medianame)
+	fileTextLength = string.len(filename)
+	
+	--get length of filename
+	if fileTextLength > 127 then
+		if formatto == "song" then
+			taiteru = mp.get_property("media-title")
+			filename = taiteru..'.'..ff
+		elseif formatto == "video" then
+			delete = fileTextLength - 127
+			filename = string.sub(filename, delete)
+		end
 	end
 	
 	-- get time
@@ -56,60 +75,64 @@ local function discordrpc()
 	remain = SecondsToClock(timeen)
 	
 	-- get state
-	state = mp.get_property("core-idle")
-	state = tostring(state)
-	if state == "yes" then
-		stateimage = "pause"
-		statetext = "Paused (" ..remain.. " Left)"
-		detailstext = "Paused (" ..total.. ")"
-	elseif state == "no" then
-		stateimage = "play"
-		statetext = "Playing"
-		detailstext = "Playing (" ..total.. ")"
-	end
-	if file == "file" then
-		stateimage = stateimage
-		detailstext = detailstext
-		statetext = statetext
-	elseif file == "nofile" then
-		stateimage = "idle"
+	eof = mp.get_property_bool("eof-reached")
+	idling = mp.get_property_bool("idle-active")
+	pause = mp.get_property_bool("pause")
+	stateimage = "play"
+	statetext = "Playing"
+	state = "Playing (" ..total.. ")"
+	status = "playing"
+	if idling or eof then
 		statetext = "Idle"
-		detailstext = ""
+		stateimage = "idle"
+		state = "Idling"
+		status = "idle"
+	elseif pause then
+		stateimage = "pause"
+		statetext = "Paused (" ..remain.. " left)"
+		state = "Paused (" ..total.. ")"
+		status = "paused"
 	end
 	
 	-- init rpc and send
 	discordRPC.initialize(appId, true)
-	if state == "no" then
+	if status == "playing" then
 		presence = {
-			state = detailstext,
+			state = state,
 			details = filename,
 			startTimestamp = timenow,
 			endTimestamp = timenow + timeen,
 			largeImageKey = "mpvlogo",
-			largeImageText = "mpv Media player",
+			largeImageText = medianame,
 			smallImageKey = stateimage,
 			smallImageText = statetext,
 		}
-	elseif state == "yes" or file == "nofile" then
+	elseif status == "paused" then
 		presence = {
-			state = detailstext,
+			state = state,
 			details = filename,
 			largeImageKey = "mpvlogo",
-			largeImageText = "mpv Media player",
+			largeImageText = medianame,
 			smallImageKey = stateimage,
 			smallImageText = statetext,
 		}
+	elseif status == "idle" then
+		presence = {
+			details = state,
+			smallImageKey = stateimage,
+			smallImageText = statetext,
+			largeImageKey = "mpvlogo",
+			largeImageText = "Current File: None",
+		}
 	end
-	nextPresenceUpdate = 0
 	
 	-- Pring Debug part (disable with double dash)
-	print("Now Playing: "..filename)
+	print("Loaded File: "..filename)
 	print("File Format: "..ff)
 	print("Total Time (In Seconds): "..total)
-	print("Current State: "..statetext)
+	print("Current State: "..status)
 	
 	discordRPC.updatePresence(presence)
-	--discordRPC.updatePresence(presence)
 end
 
 

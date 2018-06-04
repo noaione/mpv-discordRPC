@@ -34,6 +34,7 @@ local function discordrpc()
 	ff = mp.get_property("file-format")
 	ff = tostring(ff)
 	if ff == "mp3" or ff == "flac" or ff == "m4a" or ff == "wav" or ff == "dts" then
+		print('### Music')
 		taiteru = mp.get_property("media-title")
 		taiteru = taiteru..'.'..ff
 		artist = mp.get_property_native("metadata/by-key/Artist")
@@ -48,10 +49,14 @@ local function discordrpc()
 		filename = mp.get_property("filename/no-ext")
 		filename = tostring(filename)
 		formatto = "video"
+		if filename:find "watch%?v" then
+			print('### Youtube video')
+			filename = mp.get_property("media-title")
+		else
+			print('### Local video')
+		end
 	end
 	
-	medianame = mp.get_property("media-title")
-	medianame = ("Current File: %s"):format(medianame)
 	fileTextLength = string.len(filename)
 	
 	--get length of filename
@@ -74,12 +79,24 @@ local function discordrpc()
 	total = SecondsToClock(total)
 	remain = SecondsToClock(timeen)
 	
+	-- get chapter
+	chapCurrent = mp.get_property("chapter")
+	chapTotal = mp.get_property("chapters")
+	if (tostring(chapCurrent) == 'nil' and tostring(chapTotal) == 'nil') or tostring(chapCurrent) == 'nil' or tostring(chapTotal) == 'nil' then
+		chapTotal = '1'
+		chapCurrent = '1'
+		chapterNow = ("%s/%s"):format(tostring(chapCurrent), tostring(chapTotal))
+	else
+		chapName = tostring(mp.get_property(string.format("chapter-list/%s/title", tonumber(chapCurrent))))
+		chapterNow = ("%s/%s - %s"):format(tostring(tonumber(chapCurrent)+1), tostring(tonumber(chapTotal)+1), tostring(chapName))
+	end
+
 	-- get state
 	eof = mp.get_property_bool("eof-reached")
 	idling = mp.get_property_bool("idle-active")
 	pause = mp.get_property_bool("pause")
 	stateimage = "play"
-	statetext = "Playing"
+	statetext = ("Playing (%s)"):format(chapterNow)
 	state = "Playing (" ..total.. ")"
 	status = "playing"
 	if idling or eof then
@@ -103,7 +120,7 @@ local function discordrpc()
 			startTimestamp = timenow,
 			endTimestamp = timenow + timeen,
 			largeImageKey = "mpvlogo",
-			largeImageText = medianame,
+			largeImageText = "mpv Media Player",
 			smallImageKey = stateimage,
 			smallImageText = statetext,
 		}
@@ -112,7 +129,7 @@ local function discordrpc()
 			state = state,
 			details = filename,
 			largeImageKey = "mpvlogo",
-			largeImageText = medianame,
+			largeImageText = "mpv Media Player",
 			smallImageKey = stateimage,
 			smallImageText = statetext,
 		}
@@ -122,13 +139,14 @@ local function discordrpc()
 			smallImageKey = stateimage,
 			smallImageText = statetext,
 			largeImageKey = "mpvlogo",
-			largeImageText = "Current File: None",
+			largeImageText = "mpv Media Player",
 		}
 	end
 	
 	-- Pring Debug part (disable with double dash)
 	print("Loaded File: "..filename)
 	print("File Format: "..ff)
+	print(string.format("Chapter: %s", chapterNow))
 	print("Total Time (In Seconds): "..total)
 	print("Current State: "..status)
 	

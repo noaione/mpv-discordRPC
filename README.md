@@ -5,7 +5,7 @@ Using [lua-DiscordRPC](https://github.com/pfirsich/lua-discordRPC) as base and m
 
 ### [Download](https://github.com/noaione/mpv-discordRPC/releases)
 
-### Recommended Linux Version: [cniw Fork](https://github.com/cniw/mpv-discordRPC)
+### Recommended Linux Version: [cniw version](https://github.com/cniw/mpv-discordRPC)
 
 ### How to install (Windows)
 1. Download this repo or goto Release
@@ -26,7 +26,7 @@ echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.config/mpv/scripts/" >> ~/.
 ```
 -- Refresh interval: 15 seconds (Limited by Discord itself)
 -- Script: lua
--- Current Version: 1.4
+-- Current Version: 1.6
 ```
 
 ### Problem:
@@ -42,4 +42,6 @@ echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.config/mpv/scripts/" >> ~/.
 -- Version 1.2: Cleaned up, making idle mode more idle. Compacted everything to 3 files
 -- Version 1.3: Linux Support (please open issue if there is any problem)
 -- Version 1.4: Remaining time, more detailed info, and updated DiscordRPC.lua and .dll to version 3.3.0
+-- Version 1.5: Reworked how Idle, playing, paused works
+-- Version 1.6: Youtube Mode; Find chapter number, metadata, etc
 ```

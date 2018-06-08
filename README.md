@@ -7,20 +7,10 @@ Using [lua-DiscordRPC](https://github.com/pfirsich/lua-discordRPC) as base and m
 
 ### Recommended Linux Version: [cniw version](https://github.com/cniw/mpv-discordRPC)
 
-### How to install (Windows)
+### How to install
 1. Download this repo or goto Release
 2. Extract it to mpv directory, ex mpv dir. C:\mpv\
 3. Done
-
-### How to install (Linux)
-0. Install LuaJIT first
-1. Extract files
-2. Copy extracted files to /home/YOURUSERNAME/.config/mpv/scripts
-3. Open up terminal and type this: 
-```bash
-echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.config/mpv/scripts/" >> ~/.bashrc
-```
-4. Done
 
 ### Information:
 ```

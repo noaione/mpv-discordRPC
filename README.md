@@ -9,8 +9,9 @@ Using [lua-DiscordRPC](https://github.com/pfirsich/lua-discordRPC) as base and m
 
 ### How to install
 1. Download this repo or goto Release
-2. Extract it to mpv directory, ex mpv dir. C:\mpv\
-3. Done
+2. Extract files from the Scripts folder to your scripts folder (Some of them are in appdata)
+3. Put the DLL besides mpv.exe
+4. Done
 
 ### Information:
 ```

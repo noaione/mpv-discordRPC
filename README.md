@@ -1,5 +1,5 @@
 # mpv media player Discord RPC Integration
-#### Created by noaione, contact me at discord if there is any problem: N4O#3775
+#### Created by noaione, contact me at discord if there is any problem: N4O#8868
 Using [lua-DiscordRPC](https://github.com/pfirsich/lua-discordRPC) as base and mpv lua module
 
 ![Playing](https://image.ibb.co/dkjnt8/mpv_DRPC_Playing.png) ![Paused](https://image.ibb.co/mq496T/mpv_DRPC_Paused.png) ![Idling](https://image.ibb.co/eLdDY8/mpv_DRPC_Idling.png)

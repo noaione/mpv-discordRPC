@@ -1,6 +1,5 @@
 local discordRPC = require("discordRPC")
 local appId = "441537954259664896" --Do not change this, or it will broke
-local count = 1
 
 function discordRPC.ready(userId, username, discriminator, avatar)
     print(string.format("Discord: ready (%s, %s, %s, %s)", userId, username, discriminator, avatar))
@@ -17,9 +16,7 @@ end
 function SecondsToClock(seconds)
 	local seconds = tonumber(seconds)
 
-	if seconds == nil then
-		return "00:00:00";
-	elseif seconds <= 0 then
+	if seconds == nil or seconds <= 0 then
 		return "00:00:00";
 	else
 		hours = string.format("%02.f", math.floor(seconds/3600));
@@ -29,42 +26,46 @@ function SecondsToClock(seconds)
 	end
 end
 
-local function discordrpc()
-	--get filename
+local function mpvdrpc()
+	--get filename/metadata
+	local audioformats = { 'aac', 'aax', 'act', 'aiff', 'amr', 'ape', 'au', 'awb', 'dct', 'dss', 'dvf', 'flac', 'gsm', 'm4a', 'm4b', 'm4p', 'mp3', 'mpc', 'ogg', 'oga', 'mogg', 'opus', 'ra', 'rm', 'tta', 'vox', 'wav', 'wma' } -- Copied from wikipedia page
 	ff = mp.get_property("file-format")
 	ff = tostring(ff)
-	if ff == "mp3" or ff == "flac" or ff == "m4a" or ff == "wav" or ff == "dts" then
-		print('### Music')
-		taiteru = mp.get_property("media-title")
-		taiteru = taiteru..'.'..ff
-		artist = mp.get_property_native("metadata/by-key/Artist")
-		if taiteru ~= nil then
-			filename = taiteru
-		end
-		if artist ~= nil then
-			filename = ("%s - %s"):format(artist, filename)
-		end
-		formatto = "song"
-	else
-		filename = mp.get_property("filename/no-ext")
-		filename = tostring(filename)
-		formatto = "video"
-		if filename:find "watch%?v" then
-			print('### Youtube video')
-			filename = mp.get_property("media-title")
+	for _,v in pairs(audioformats) do
+		if v == ff then
+			print('### Music')
+			songtitle = mp.get_property("media-title")
+			songtitle = songtitle..'.'..ff
+			artist = mp.get_property_native("metadata/by-key/Artist")
+			if songtitle ~= nil then
+				filename = songtitle
+			end
+			if artist ~= nil then
+				filename = ("%s - %s"):format(artist, filename)
+			end
+			playmode = "song"
+			break
 		else
-			print('### Local video')
+			filename = mp.get_property("filename/no-ext")
+			filename = tostring(filename)
+			playmode = "video"
+			if filename:find "http" then
+				print('### Internet video')
+				filename = mp.get_property("media-title")
+			else
+				print('### Local video')
+			end
 		end
 	end
 	
 	fileTextLength = string.len(filename)
 	
-	--get length of filename
+	--get length of the filename/metadata (for checking if it reach maximum character)
 	if fileTextLength > 127 then
-		if formatto == "song" then
-			taiteru = mp.get_property("media-title")
-			filename = taiteru..'.'..ff
-		elseif formatto == "video" then
+		if playmode == "song" then
+			songtitle = mp.get_property("media-title")
+			filename = songtitle..'.'..ff
+		elseif playmode == "video" then
 			delete = fileTextLength - 127
 			filename = string.sub(filename, delete)
 		end
@@ -72,8 +73,7 @@ local function discordrpc()
 	
 	-- get time
 	timenow = os.time(os.date("*t"))
-	timest = os.time(os.date("*t", timest))
-	timeen = mp.get_property("playtime-remaining")
+	timeen = mp.get_property("time-pos")
 	timeen = os.time(os.date("*t", timeen))
 	total = mp.get_property("duration")
 	total = SecondsToClock(total)
@@ -117,8 +117,7 @@ local function discordrpc()
 		presence = {
 			state = state,
 			details = filename,
-			startTimestamp = timenow,
-			endTimestamp = timenow + timeen,
+			startTimestamp = timenow - timeen,
 			largeImageKey = "mpvlogo",
 			largeImageText = "mpv Media Player",
 			smallImageKey = stateimage,
@@ -150,8 +149,8 @@ local function discordrpc()
 	print("Total Time (In Seconds): "..total)
 	print("Current State: "..status)
 	
-	discordRPC.updatePresence(presence)
+	discordRPC.updatePresence(presence) -- Send everything \o/
 end
 
 
-mp.add_periodic_timer(1, discordrpc) -- set as 1 but repeat every 15 seconds(?)
+mp.add_periodic_timer(1, mpvdrpc) -- set as 1 but repeat every 15 seconds

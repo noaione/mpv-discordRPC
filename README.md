@@ -18,7 +18,7 @@ Using [lua-DiscordRPC](https://github.com/pfirsich/lua-discordRPC) as base and m
 ```
 -- Refresh interval: 15 seconds (Limited by Discord itself)
 -- Script: lua
--- Current Version: 1.6
+-- Current Version: 1.7
 ```
 
 ### Problem:
@@ -36,4 +36,5 @@ Using [lua-DiscordRPC](https://github.com/pfirsich/lua-discordRPC) as base and m
 -- Version 1.4: Remaining time, more detailed info, and updated DiscordRPC.lua and .dll to version 3.3.0
 -- Version 1.5: Reworked how Idle, playing, paused works
 -- Version 1.6: Youtube Mode; Find chapter number, metadata, etc
+-- Version 1.7: Renamed drpc.lua to mpv-drpc.lua || Add more audio formats that i get from wikipedia page. || Make the script more cleaner.
 ```

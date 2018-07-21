@@ -1,5 +1,5 @@
 local discordRPC = require("discordRPC")
-local appId = "441537954259664896" --Do not change this, or it will broke
+local appId = "470185467959050261" --Do not change this, or it will broke (v2 update)
 
 function discordRPC.ready(userId, username, discriminator, avatar)
     print(string.format("Discord: ready (%s, %s, %s, %s)", userId, username, discriminator, avatar))

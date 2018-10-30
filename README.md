@@ -12,7 +12,7 @@ Using [lua-DiscordRPC](https://github.com/pfirsich/lua-discordRPC) as base and m
 1. Download this repo or goto Release
 2. Extract files from the Scripts folder to your scripts folder (Some of them are in appdata)
 3. Put the DLL besides mpv.exe
-3a. Change appId (Line 2) to `470185467959050261` if you download it via **Release tab**
+- 3a. Change appId (Line 2) to `470185467959050261` if you download it via **Release tab**
 4. Done
 
 ### Information:

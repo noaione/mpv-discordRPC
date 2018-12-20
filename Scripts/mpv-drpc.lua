@@ -1,17 +1,6 @@
 local discordRPC = require("discordRPC")
 local appId = "470185467959050261" --Do not change this, or it will broke (v2 update)
-
-function discordRPC.ready(userId, username, discriminator, avatar)
-    print(string.format("Discord: ready (%s, %s, %s, %s)", userId, username, discriminator, avatar))
-end
-
-function discordRPC.disconnected(errorCode, message)
-    print(string.format("Discord: disconnected (%d: %s)", errorCode, message))
-end
-
-function discordRPC.errored(errorCode, message)
-    print(string.format("Discord: error (%d: %s)", errorCode, message))
-end
+local opts = require 'mp.options'
 
 function SecondsToClock(seconds)
 	local seconds = tonumber(seconds)
@@ -26,14 +15,29 @@ function SecondsToClock(seconds)
 	end
 end
 
+local drpc_opts = {
+	playText = "Watching",
+	-- Set Playing text for video
+	playMusicText = "Listening",
+	-- Set Playing text for Music
+	playOtherText = "Looking",
+	-- Set Playing text for image or something else
+	pausedText = "Paused",
+	-- Set Paused state text
+	idlingText = "Nothing",
+	-- Set Idling state text
+	
+	useMediaTitle = "no"
+	-- Use media-title for video not filename/no-ext
+}
+opts.read_options(drpc_opts)
+
 local function mpvdrpc()
 	--get filename/metadata
-	local audioformats = { 'aac', 'aax', 'act', 'aiff', 'amr', 'ape', 'au', 'awb', 'dct', 'dss', 'dvf', 'flac', 'gsm', 'm4a', 'm4b', 'm4p', 'mp3', 'mpc', 'ogg', 'oga', 'mogg', 'opus', 'ra', 'rm', 'tta', 'vox', 'wav', 'wma' } -- Copied from wikipedia page
-	ff = mp.get_property("file-format")
-	ff = tostring(ff)
+	local audioformats = { 'aac', 'aax', 'act', 'aiff', 'amr', 'ape', 'au', 'awb', 'dct', 'dsf', 'dss', 'dvf', 'flac', 'gsm', 'm4a', 'm4b', 'm4p', 'mp3', 'mpc', 'ogg', 'oga', 'mogg', 'opus', 'ra', 'rm', 'tta', 'vox', 'wav', 'wma' } -- Copied from wikipedia page
+	ff = tostring(mp.get_property("file-format"))
 	for _,v in pairs(audioformats) do
 		if v == ff then
-			print('### Music')
 			songtitle = mp.get_property("media-title")
 			songtitle = songtitle..'.'..ff
 			artist = mp.get_property_native("metadata/by-key/Artist")
@@ -43,26 +47,36 @@ local function mpvdrpc()
 			if artist ~= nil then
 				filename = ("%s - %s"):format(artist, filename)
 			end
-			playmode = "song"
+			playmode = "music"
 			break
+		elseif ff == "jpg" or ff == "jpeg" or ff == "png" or ff == "tiff" or ff == "exif" or ff == "gif" or ff == "bmp" or ff == "webp" or ff == "heif" or ff == "svg" then
+			playmode = "image" -- Why am I doing this
+			filename = tostring(mp.get_property("filename"))
 		else
-			filename = mp.get_property("filename/no-ext")
+			filename = mp.get_property("filename")
 			filename = tostring(filename)
 			playmode = "video"
-			if filename:find "http" then
-				print('### Internet video')
+			chk = tostring(string.find(filename, "http"))
+			if chk ~= 'nil' then
 				filename = mp.get_property("media-title")
 			else
-				print('### Local video')
+				if drpc_opts.useMediaTitle == "no" then
+					filename = mp.get_property("filename/no-ext")
+				else
+					filename = mp.get_property("media-title")
+				end
 			end
 		end
 	end
+	print(filename)
 	
 	fileTextLength = string.len(filename)
 	
-	--get length of the filename/metadata (for checking if it reach maximum character)
+	print("### "..playmode:upper())
+	
+	-- get length of the filename/metadata (for checking if it reach maximum character)
 	if fileTextLength > 127 then
-		if playmode == "song" then
+		if playmode == "music" then
 			songtitle = mp.get_property("media-title")
 			filename = songtitle..'.'..ff
 		elseif playmode == "video" then
@@ -83,8 +97,13 @@ local function mpvdrpc()
 	chapCurrent = mp.get_property("chapter")
 	chapTotal = mp.get_property("chapters")
 	if (tostring(chapCurrent) == 'nil' and tostring(chapTotal) == 'nil') or tostring(chapCurrent) == 'nil' or tostring(chapTotal) == 'nil' then
-		chapTotal = '1'
-		chapCurrent = '1'
+		if playmode == "music" then
+			chapTotal = mp.get_property("playlist-count")
+			chapCurrent = mp.get_property("playlist-pos-1")
+		else
+			chapTotal = '1'
+			chapCurrent = '1'
+		end
 		chapterNow = ("%s/%s"):format(tostring(chapCurrent), tostring(chapTotal))
 	else
 		chapName = tostring(mp.get_property(string.format("chapter-list/%s/title", tonumber(chapCurrent))))
@@ -96,8 +115,16 @@ local function mpvdrpc()
 	idling = mp.get_property_bool("idle-active")
 	pause = mp.get_property_bool("pause")
 	stateimage = "play"
-	statetext = ("Playing (%s)"):format(chapterNow)
-	state = "Playing (" ..total.. ")"
+	if playmode == "video" then
+		statetext = ("%s (%s)"):format(drpc_opts.playText, chapterNow)
+		state = ("%s (%s)"):format(drpc_opts.playText, total)
+	elseif playmode == "music" then
+		statetext = ("%s (%s)"):format(drpc_opts.playMusicText, chapterNow)
+		state = ("%s (%s)"):format(drpc_opts.playMusicText, total)
+	else
+		statetext = ("%s (%s)"):format(drpc_opts.playOtherText, chapterNow)
+		state = ("%s (%s)"):format(drpc_opts.playOtherText, total)
+	end
 	status = "playing"
 	if idling or eof then
 		statetext = "Idle"
@@ -106,7 +133,7 @@ local function mpvdrpc()
 		status = "idle"
 	elseif pause then
 		stateimage = "pause"
-		statetext = "Paused (" ..remain.. " left)"
+		statetext = "Paused (" ..remain.. " elapsed)"
 		state = "Paused (" ..total.. ")"
 		status = "paused"
 	end
@@ -151,6 +178,5 @@ local function mpvdrpc()
 	
 	discordRPC.updatePresence(presence) -- Send everything \o/
 end
-
 
 mp.add_periodic_timer(1, mpvdrpc) -- set as 1 but repeat every 15 seconds

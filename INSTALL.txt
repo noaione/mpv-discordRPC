@@ -1,13 +1,24 @@
-========== Instalation Windows ==========
-1. Put discord-rpc.dll to your local mpv directory. (copy from lib\win32 or lib\win64)
-2. Copy scripts\mpv-drpc.lua to your mpv scripts folder
+========== First Step ==========
+1. Download this repository or via releases
+2. Extract it to somewhere then follow the Instalation instruction below.
 
-========== Instalation Linux & OS X==========
-1. Put libdiscord-rpc.so to your local lib folder. (copy from `linux` or `osx`)
-	- Usually on: /usr/local/lib
-2. Copy scripts\mpv-drpc.lua to your mpv scripts folder
+========== Instalation Windows ==========
+1. Put `discord-rpc.dll` to your local mpv directory. (copy from `lib\win32` or `lib\win64`)
+2. Copy `scripts\mpv-drpc.lua` to your mpv scripts folder
+
+========== Instalation Linux ==========
+1. Put `libdiscord-rpc.so` to your local lib folder. (copy from `lib\linux`)
+	- Usually on: `/usr/local/lib`
+2. Copy `scripts\mpv-drpc.lua` to your mpv scripts folder
 3. Update your library path
 
+========== Instalation OS X ==========
+1. Put `libdiscord-rpc.dylib` to your local lib folder. (copy from `lib\osx`)
+	- Usually on: `/usr/local/lib`
+2. Copy `scripts\mpv-drpc.lua` to your mpv scripts folder
+3. Update your library path
+
+========== Instalation Notes ==========
 Scripts folder location:
 - .\mpv\scripts # Windows
 - %APPDATA%\mpv\scripts # Windows

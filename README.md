@@ -13,9 +13,6 @@
     <a href="#information">Information</a>
 </p>
 
-#### Created by noaione, contact me at discord if there is any problem: N4O#8868
-Using [lua-DiscordRPC](https://github.com/pfirsich/lua-discordRPC) as base and mpv lua module
-
 ---
 ## Screenshot
 | State | Image |

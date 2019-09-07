@@ -2,7 +2,12 @@
 #### Created by noaione, contact me at discord if there is any problem: N4O#8868
 Using [lua-DiscordRPC](https://github.com/pfirsich/lua-discordRPC) as base and mpv lua module
 
-![Playing](https://image.ibb.co/dkjnt8/mpv_DRPC_Playing.png) ![Paused](https://image.ibb.co/mq496T/mpv_DRPC_Paused.png) ![Idling](https://image.ibb.co/eLdDY8/mpv_DRPC_Idling.png)
+![Playing Video](https://raw.githubusercontent.com/noaione/mpv-discordRPC/master/assets/playing_video.png) 
+![Playing Audio](https://raw.githubusercontent.com/noaione/mpv-discordRPC/master/assets/playing_audio.png) 
+![Playing Other Stuff/Image](https://raw.githubusercontent.com/noaione/mpv-discordRPC/master/assets/playing_other.png)
+![Playing from website (Stream)](https://raw.githubusercontent.com/noaione/mpv-discordRPC/master/assets/playing_stream.png)
+
+![Paused](https://raw.githubusercontent.com/noaione/mpv-discordRPC/master/assets/paused.png) ![Idling](https://raw.githubusercontent.com/noaione/mpv-discordRPC/master/assets/idling.png)
 
 ### [Download](https://github.com/noaione/mpv-discordRPC/releases)
 
@@ -19,7 +24,7 @@ Using [lua-DiscordRPC](https://github.com/pfirsich/lua-discordRPC) as base and m
 ```
 -- Refresh interval: 15 seconds (Limited by Discord itself)
 -- Script: lua
--- Current Version: 1.8
+-- Current Version: 2.0
 ```
 
 ### Problem:
@@ -36,7 +41,16 @@ Using [lua-DiscordRPC](https://github.com/pfirsich/lua-discordRPC) as base and m
 -- Version 1.3: Linux Support (please open issue if there is any problem)
 -- Version 1.4: Remaining time, more detailed info, and updated DiscordRPC.lua and .dll to version 3.3.0
 -- Version 1.5: Reworked how Idle, playing, paused works
--- Version 1.6: Youtube Mode; Find chapter number, metadata, etc
--- Version 1.7: Renamed drpc.lua to mpv-drpc.lua || Add more audio formats that i get from wikipedia page. || Make the script more cleaner.
--- Version 1.8: Added some options, more feature for chapter/playlist
+-- Version 1.6: Youtube Mode
+                Find chapter number, metadata, etc
+-- Version 1.7: Renamed drpc.lua to mpv-drpc.lua
+                Add more audio formats that i get from wikipedia page.
+                Make the script more cleaner.
+-- Version 1.8: Added some options
+                More feature for chapter/playlist
+-- Version 2.0: Added toggle option to enable/disable mpv-drpc. 
+                Merge all scripts to one file.
+                Fix "streaming video" checking
+                Add website name and strip them to only the Website name.
+                Improve "Image" and "Other" checking.
 ```

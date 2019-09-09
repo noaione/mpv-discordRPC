@@ -10,7 +10,7 @@
     <a href="#screenshot">Screenshot</a> •
     <a href="https://github.com/noaione/mpv-discordRPC/releases">Download</a> •
     <a href="https://github.com/noaione/mpv-discordRPC/blob/master/INSTALL.md">Installation</a> •
-    <a href="#information">Information</a>
+    <a href="#changelog">Changelog</a>
 </p>
 
 ---
@@ -53,43 +53,12 @@
                 Add website name and strip them to only the Website name.
                 Improve "Image" and "Other" checking.
 ```
-<h1 align="center">
-    mpv Media Player Discord RPC Integration
-</h1>
-<p align="center"><b>Version 2.0</b><br>Created by NoAiOne, contact me at Discord or open Issues if there's any problem<br>Using <a href="https://github.com/pfirsich/lua-discordRPC">lua-DiscordRPC</a> as it base code and discord-rpc library files</p>
-
-<p align="center">
-    <a href="#screenshot">Screenshot</a> •
-    <a href="https://github.com/noaione/mpv-discordRPC/releases">Download</a> •
-    <a href="#how-to-install">Installation</a> •
-    <a href="#information">Information</a>
-</p>
-
-#### Created by noaione, contact me at discord if there is any problem: N4O#8868
-Using [lua-DiscordRPC](https://github.com/pfirsich/lua-discordRPC) as base and mpv lua module
-
----
-## Screenshot
-| State | Image |
-| :-: | :-: |
-| Playing: Video | ![Playing Video](https://raw.githubusercontent.com/noaione/mpv-discordRPC/master/assets/playing_video.png) |
-| Playing: Music | ![Playing Music](https://raw.githubusercontent.com/noaione/mpv-discordRPC/master/assets/playing_music.png) |
-| Playing: Other | ![Playing Other Stuff/Image](https://raw.githubusercontent.com/noaione/mpv-discordRPC/master/assets/playing_other.png) |
-| Playing: Stream | ![Playing from website (Stream)](https://raw.githubusercontent.com/noaione/mpv-discordRPC/master/assets/playing_stream.png) |
-| Paused | ![Paused](https://raw.githubusercontent.com/noaione/mpv-discordRPC/master/assets/paused.png) |
-| Idling/Stop | ![Idling](https://raw.githubusercontent.com/noaione/mpv-discordRPC/master/assets/idling.png) |
+![Idling](https://raw.githubusercontent.com/noaione/mpv-discordRPC/master/assets/idling.png) |
 
 ### [Download](https://github.com/noaione/mpv-discordRPC/releases)
 
 ### How to install
 Download this repo or goto [Release](https://github.com/noaione/mpv-discordRPC/releases) then refer to [INSTALL.txt](https://github.com/noaione/mpv-discordRPC/blob/master/INSTALL.txt)
-
-### Information:
-```
--- Refresh interval: 15 seconds (Limited by Discord itself)
--- Script: lua
--- Current Version: 2.0
-```
 
 ### Changelog
 ```

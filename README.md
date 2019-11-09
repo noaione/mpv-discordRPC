@@ -4,7 +4,7 @@
 <h1 align="center">
     mpv Media Player Discord RPC Integration
 </h1>
-<p align="center"><b>Version 2.0</b><br>Created by NoAiOne, contact me at Discord or open Issues if there's any problem<br>Using <a href="https://github.com/pfirsich/lua-discordRPC">lua-DiscordRPC</a> as it base code and discord-rpc library files</p>
+<p align="center"><b>Version 2.1</b><br>Created by NoAiOne, contact me at Discord or open Issues if there's any problem<br>Using <a href="https://github.com/pfirsich/lua-discordRPC">lua-DiscordRPC</a> as it base code and discord-rpc library files</p>
 
 <p align="center">
     <a href="#screenshot">Screenshot</a> •
@@ -45,4 +45,6 @@
                 Fix "streaming video" checking
                 Add website name and strip them to only the Website name.
                 Improve "Image" and "Other" checking.
+-- Version 2.1: Start DRPC when file loaded.
+                Hopefully fix DRPC not showing up.
 ```

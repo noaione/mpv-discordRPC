@@ -4,7 +4,7 @@
 <h1 align="center">
     Installation Tutorial
 </h1>
-<p align="center"><b>mpv Discord RPC Version 2.0</b><br>Created by NoAiOne</p>
+<p align="center"><b>mpv Discord RPC Version 2.1</b><br>Created by NoAiOne</p>
 
 <p align="center">
     <a href="https://github.com/noaione/mpv-discordRPC">Home</a> •

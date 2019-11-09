@@ -1,12 +1,35 @@
 local appId = "470185467959050261" --Do not change this, or it will broke (v2 update)
 local opts = require 'mp.options'
-local version = '2.0'
+local version = '2.1'
 drpcStatus = 'active' -- Don't change this
+
+local drpc_opts = {
+	playText = "Watching",
+	-- Set Playing text for video
+	playStreamText = "Streaming",
+	-- Set Playing text for streaming
+	playMusicText = "Listening",
+	-- Set Playing text for Music
+	playOtherText = "Viewing",
+	-- Set Playing text for image or something else
+	pausedText = "Paused",
+	-- Set Paused state text
+	idlingText = "Idling",
+	-- Set Idling state text
+
+	useMediaTitle = "no", -- "yes" or "no"
+	-- Use media-title for video not filename/no-ext
+
+	runDRPC = "yes" -- "yes", "no, or "always"
+	-- Disable, or enable it
+}
+opts.read_options(drpc_opts)
 
 -- Merge to one file: https://github.com/pfirsich/lua-discordRPC
 
 local ffi = require "ffi"
 local discordRPClib = ffi.load("discord-rpc")
+local msg = require 'mp.msg'
 
 ffi.cdef[[
 typedef struct DiscordRichPresence {
@@ -118,13 +141,13 @@ local joinRequest_proxy = ffi.cast("joinRequestPtr", function(request)
 end)
 
 -- helpers
-function checkArg(arg, argType, argName, func, maybeNil)
+local function checkArg(arg, argType, argName, func, maybeNil)
     assert(type(arg) == argType or (maybeNil and arg == nil),
         string.format("Argument \"%s\" to function \"%s\" has to be of type \"%s\"",
             argName, func, argType))
 end
 
-function checkStrArg(arg, maxLen, argName, func, maybeNil)
+local function checkStrArg(arg, maxLen, argName, func, maybeNil)
     if maxLen then
         assert(type(arg) == "string" and arg:len() <= maxLen or (maybeNil and arg == nil),
             string.format("Argument \"%s\" of function \"%s\" has to be of type string with maximum length %d",
@@ -134,7 +157,7 @@ function checkStrArg(arg, maxLen, argName, func, maybeNil)
     end
 end
 
-function checkIntArg(arg, maxBits, argName, func, maybeNil)
+local function checkIntArg(arg, maxBits, argName, func, maybeNil)
     maxBits = math.min(maxBits or 32, 52) -- lua number (double) can only store integers < 2^53
     local maxVal = 2^(maxBits-1) -- assuming signed integers, which, for now, are the only ones in use
     assert(type(arg) == "number" and math.floor(arg) == arg
@@ -170,18 +193,17 @@ function discordRPC.shutdown()
 end
 
 function discordRPC.runCallbacks()
-    -- http://luajit.org/ext_ffi_semantics.html#callback :
-    -- One thing that's not allowed, is to let an FFI call into a C function (runCallbacks)
-    -- get JIT-compiled, which in turn calls a callback, calling into Lua again (i.e. discordRPC.ready).
-    -- Usually this attempt is caught by the interpreter first and the C function
-    -- is blacklisted for compilation.
-    -- solution:
-    -- Then you'll need to manually turn off JIT-compilation with jit.off() for
-    -- the surrounding Lua function that invokes such a message polling function.
-    jit.off()
     discordRPClib.Discord_RunCallbacks()
-    jit.on()
 end
+-- http://luajit.org/ext_ffi_semantics.html#callback :
+-- It is not allowed, to let an FFI call into a C function (runCallbacks)
+-- get JIT-compiled, which in turn calls a callback, calling into Lua again (e.g. discordRPC.ready).
+-- Usually this attempt is caught by the interpreter first and the C function
+-- is blacklisted for compilation.
+-- solution:
+-- "Then you'll need to manually turn off JIT-compilation with jit.off() for
+-- the surrounding Lua function that invokes such a message polling function."
+jit.off(discordRPC.runCallbacks)
 
 function discordRPC.updatePresence(presence)
     local func = "discordRPC.updatePresence"
@@ -257,6 +279,18 @@ getmetatable(discordRPC.gcDummy).__gc = function()
     joinRequest_proxy:free()
 end
 
+function discordRPC.ready(userId, username, discriminator, avatar)
+    msg.verbose("[discordrpc] Discord: ready (" .. userId .. ", " .. username .. ", " .. discriminator ", " .. avatar .. ")")
+end
+
+function discordRPC.disconnected(errorCode, message)
+    msg.verbose("[discordrpc] Discord: disconnected (" .. errorCode .. ": " .. message .. ")")
+end
+
+function discordRPC.errored(errorCode, message)
+    msg.verbose("[discordrpc] Discord: error (" .. errorCode .. ": " .. message .. ")")
+end
+
 --------------------------------------------------------------------------------
 
 function SecondsToClock(seconds)
@@ -295,28 +329,6 @@ function uri_video_source_name(url_path)
 	return final_text:gsub("^%l", final_text.upper)
 end
 
-local drpc_opts = {
-	playText = "Watching",
-	-- Set Playing text for video
-	playStreamText = "Streaming",
-	-- Set Playing text for streaming
-	playMusicText = "Listening",
-	-- Set Playing text for Music
-	playOtherText = "Viewing",
-	-- Set Playing text for image or something else
-	pausedText = "Paused",
-	-- Set Paused state text
-	idlingText = "Idling",
-	-- Set Idling state text
-	
-	useMediaTitle = "no", -- "yes" or "no"
-	-- Use media-title for video not filename/no-ext
-	
-	runDRPC = "yes" -- "yes", "no, or "always"
-	-- Disable, or enable it
-}
-opts.read_options(drpc_opts)
-
 function mpvdrpc()
 	--get filename/metadata
 	local audioformats = { 'aac', 'aax', 'act', 'aiff', 'amr', 'ape', 'au', 'awb', 'dct', 'dsf', 'dss', 'dvf', 'flac', 'gsm', 'm4a', 'm4b', 'm4p', 'mp3', 'mpc', 'ogg', 'oga', 'mogg', 'opus', 'ra', 'rm', 'tta', 'vox', 'wav', 'wma' } -- Copied from wikipedia page
@@ -354,7 +366,7 @@ function mpvdrpc()
 		end
 	end
 	
-	print("### "..playmode:upper())
+	msg.verbose("### "..playmode:upper())
 
 	if ff == nil then
 		ff = 'Unknown'
@@ -459,20 +471,17 @@ function mpvdrpc()
 	end
 	
 	if drpcStatus == "active" then
-		-- init rpc and send
-		discordRPC.initialize(appId, true)
-		-- Pring Debug part (disable with double dash)
-		print("Status: active")
-		print("Loaded File: "..filename)
-		print("File Format: "..ff)
-		print(string.format("Chapter: %s", chapterNow))
-		print("Total Time (In Seconds): "..total)
-		print("Current State: "..status)
+		msg.verbose("Status: active")
+		msg.verbose("Loaded File: "..filename)
+		msg.verbose("File Format: "..ff)
+		msg.verbose(string.format("Chapter: %s", chapterNow))
+		msg.verbose("Total Time (In Seconds): "..total)
+		msg.verbose("Current State: "..status)
 
 		discordRPC.updatePresence(presence)
 	else
 		-- Disabled
-		print("Status: inactive")
+		msg.verbose("Status: inactive")
 	end
 end
 
@@ -481,18 +490,33 @@ function mpvdrpctoggle()
 	if drpc_opts.runDRPC == "yes" then
 		drpcStatus = "inactive"
 		drpc_opts.runDRPC = "no"
-		mp.osd_message('mpv-drpc: Disabled')
+		msg.info('Disabling mpv-drpc')
 		discordRPC.clearPresence() -- Delete presence
 		discordRPC.shutdown() -- Shutdown properly
+		mp.osd_message('mpv-drpc: Disabled')
+		msg.info('Disabled mpv-drpc')
 	elseif drpc_opts.runDRPC == "no" then
 		drpcStatus = "active"
 		drpc_opts.runDRPC = "yes"
+		msg.info('Enabled mpv-drpc')
 		mp.osd_message('mpv-drpc: Enabled')
 	elseif drpc_opts.runDRPC == "always" then
 		drpcStatus = "active"
-		mp.osd_message('mpv-drpc: cannot be disabled (check options)')
+		msg.warn('Cannot disable mpv-drpc: options `runDRPC` set to always')
+		mp.osd_message('mpv-drpc: cannot be disabled (check `runDRPC` options)')
 	end
 end
 
-mp.add_periodic_timer(1, mpvdrpc) -- set as 5 sec to check everytime and discord will update it every 15 seconds
-mp.add_key_binding("D-X", "drpc_toggle", mpvdrpctoggle)
+function init_drpc()
+	-- Initialize DRPC
+	discordRPC.initialize(appId, true)
+	discordRPC.clearPresence()
+	-- Add keybind
+	mp.add_key_binding("D-X", "drpc_toggle", mpvdrpctoggle)
+
+	-- Start drpc
+	msg.info('File loaded, Starting mpv-drpc v' .. version)
+	mp.add_periodic_timer(1, mpvdrpc) -- set as 1 sec to check everytime and discord will update it every 15 seconds
+end
+
+mp.register_event("file-loaded", init_drpc)

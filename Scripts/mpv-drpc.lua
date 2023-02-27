@@ -406,20 +406,20 @@ function mpvdrpc()
 	eof = mp.get_property_bool("eof-reached")
 	idling = mp.get_property_bool("idle-active")
 	pause = mp.get_property_bool("pause")
-	stateimage = "play"
-	if playmode == "video" then
-		statetext = ("%s (%s)"):format(drpc_opts.playText, chapterNow)
-		state = ("%s (%s)"):format(drpc_opts.playText, total)
-	elseif playmode == "music" then
-		statetext = ("%s (%s) - %s"):format(drpc_opts.playMusicText, chapterNow, ff:upper())
-		state = ("%s (%s)"):format(drpc_opts.playMusicText, total)
-	elseif playmode == "stream" then
-		statetext = ("%s (%s) - %s"):format(stream_source, chapterNow, stream_ff)
-		state = ("%s (%s)"):format(drpc_opts.playStreamText, total)
-	else
-		statetext = ("%s (%s)"):format(drpc_opts.playOtherText, chapterNow)
-		state = ("%s (%s)"):format(drpc_opts.playOtherText, total)
-	end
+    stateimage = "play"
+    if playmode == "video" then
+        statetext = ("%s (%s)"):format(drpc_opts.playText, chapterNow)
+        state = ("%s (%s / %s)"):format(drpc_opts.playText, remain, total)
+    elseif playmode == "music" then
+        statetext = ("%s (%s) - %s"):format(drpc_opts.playMusicText, chapterNow, ff:upper())
+        state = ("%s (%s / %s)"):format(drpc_opts.playMusicText, remain, total)
+    elseif playmode == "stream" then
+        statetext = ("%s (%s) - %s"):format(stream_source, chapterNow, stream_ff)
+        state = ("%s (%s / %s)"):format(drpc_opts.playStreamText, remain, total)
+    else
+        statetext = ("%s (%s)"):format(drpc_opts.playOtherText, chapterNow)
+        state = ("%s (%s / %s)"):format(drpc_opts.playOtherText, remain, total)
+    end
 	status = "playing"
 	if idling and not playmode == "image" or eof and not playmode == "image" then
 		statetext = "Idle"
@@ -427,14 +427,14 @@ function mpvdrpc()
 		state = "Idling"
 		status = "idle"
 	elseif idling and playmode == "image" or eof and playmode == "image" then
-		status = "playing"
+		status = "idle"
 		statetext = ("%s (%s)"):format(drpc_opts.playOtherText, chapterNow)
 		state = ("%s (%s)"):format(drpc_opts.playOtherText, total)
 		stateimage = "play"
 	elseif pause then
 		stateimage = "pause"
 		statetext = "Paused (" ..remain.. " elapsed)"
-		state = "Paused (" ..total.. ")"
+		state = "Paused (" ..remain.. " / "..total.. ")"
 		status = "paused"
 	end
 	
@@ -448,9 +448,6 @@ function mpvdrpc()
 			smallImageKey = stateimage,
 			smallImageText = statetext,
 		}
-		if playmode ~= "image" then
-			presence["startTimestamp"] = timenow - timeen
-		end
 	elseif status == "paused" then
 		presence = {
 			state = state,
